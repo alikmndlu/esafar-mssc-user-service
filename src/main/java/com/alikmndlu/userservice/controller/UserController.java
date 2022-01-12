@@ -1,11 +1,15 @@
 package com.alikmndlu.userservice.controller;
 
+import com.alikmndlu.userservice.config.UrlConfig;
+import com.alikmndlu.userservice.dto.LoginCredentialsDto;
+import com.alikmndlu.userservice.dto.RegisterCredentialsDto;
 import com.alikmndlu.userservice.dto.UserAddressesDto;
 import com.alikmndlu.userservice.model.User;
 import com.alikmndlu.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.Map;
@@ -16,7 +20,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final RestTemplate restTemplate;
+
     private final UserService userService;
+
+    private final UrlConfig urlConfig;
 
     private final String apiHost = "http://localhost:9001/api/users";
 
@@ -27,12 +35,6 @@ public class UserController {
         return user.isPresent() ?
                 ResponseEntity.ok().body(user.get()) :
                 ResponseEntity.notFound().build();
-    }
-
-    @PostMapping("/")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        user = userService.createUser(user);
-        return ResponseEntity.created(URI.create(apiHost + "/" + user.getId())).body(user);
     }
 
     @PutMapping("/{user-id}")
@@ -54,5 +56,26 @@ public class UserController {
         } else {
             return ResponseEntity.ok().body(userService.findUserWithAddresses(user.get()));
         }
+    }
+
+    // Check User Existence API
+    @PostMapping("/check-existence")
+    public ResponseEntity<Boolean> checkUserExistence(@RequestBody LoginCredentialsDto loginDto) {
+        return ResponseEntity.ok().body(
+                userService.checkUserExistence(loginDto.getEmailAddress(), loginDto.getPassword())
+        );
+    }
+
+    // Save New User API
+    @PostMapping("/")
+    public ResponseEntity<User> saveNewUser(@RequestBody RegisterCredentialsDto registerDto) {
+        User user = userService.createUser(
+                User.builder()
+                        .name(registerDto.getName())
+                        .emailAddress(registerDto.getEmailAddress())
+                        .password(registerDto.getPassword())
+                        .build()
+        );
+        return ResponseEntity.ok().body(user);
     }
 }

@@ -17,4 +17,6 @@ public interface UserService {
     User updateUser(Long userId, Map<String, ?> updates);
 
     UserAddressesDto findUserWithAddresses(User user);
+
+    boolean checkUserExistence(String emailAddress, String password);
 }
