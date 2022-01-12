@@ -3,12 +3,14 @@ package com.alikmndlu.userservice;
 import com.alikmndlu.userservice.model.User;
 import com.alikmndlu.userservice.repository.UserRepository;
 import com.alikmndlu.userservice.service.UserService;
+import com.alikmndlu.userservice.util.JwtUtil;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,7 +27,14 @@ public class UserServiceApplication {
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        return restTemplate;
+    }
+
+    @Bean
+    public JwtUtil jwtUtil() {
+        return new JwtUtil();
     }
 
     @Bean
@@ -38,6 +47,12 @@ public class UserServiceApplication {
                 userRepository.save(User.builder()
                         .name("Ali Kmndlu")
                         .emailAddress("alikmndlu1@gmail.com")
+                        .password("123")
+                        .build());
+
+                userRepository.save(User.builder()
+                        .name("Yones Rahimi")
+                        .emailAddress("yones224@gmail.com")
                         .password("123")
                         .build());
             }

@@ -66,4 +66,9 @@ public class UserServiceImpl implements UserService {
     public boolean checkUserExistence(String emailAddress, String password) {
         return userRepository.existsByEmailAddressAndPassword(emailAddress, password);
     }
+
+    @Override
+    public User findByEmailAddress(String emailAddress) {
+        return userRepository.findByEmailAddress(emailAddress);
+    }
 }

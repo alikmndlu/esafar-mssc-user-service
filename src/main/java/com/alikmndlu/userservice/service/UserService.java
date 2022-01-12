@@ -19,4 +19,6 @@ public interface UserService {
     UserAddressesDto findUserWithAddresses(User user);
 
     boolean checkUserExistence(String emailAddress, String password);
+
+    User findByEmailAddress(String emailAddress);
 }
