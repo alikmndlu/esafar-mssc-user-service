@@ -1,13 +1,14 @@
 package com.alikmndlu.userservice.service.impl;
 
 import com.alikmndlu.userservice.config.UrlConfig;
-import com.alikmndlu.userservice.dto.AddressDto;
 import com.alikmndlu.userservice.dto.UserAddressesDto;
 import com.alikmndlu.userservice.model.User;
 import com.alikmndlu.userservice.repository.UserRepository;
 import com.alikmndlu.userservice.service.UserService;
+import com.alikmndlu.userservice.util.StaticUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,9 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final RestTemplate restTemplate;
-
-    private final UrlConfig urlConfig;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<User> findUserById(Long userId) {
@@ -31,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
+        user.setPassword(StaticUtils.md5Encrypt(user.getPassword()));
         return userRepository.save(user);
     }
 
