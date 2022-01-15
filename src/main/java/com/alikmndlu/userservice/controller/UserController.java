@@ -128,11 +128,9 @@ public class UserController {
 
     // Test Endpoint
     @GetMapping("/test")
-    public ResponseEntity<String> hello() throws InterruptedException {
-        System.out.println(DigestUtils.md5DigestAsHex("123".getBytes()));
-        Thread.sleep(1000);
-        System.out.println(DigestUtils.md5DigestAsHex("123".getBytes()));
-        return null;
+    public ResponseEntity<User> hello() throws InterruptedException {
+        User user = userService.findUserById(3L).get();
+        return ResponseEntity.ok(user);
     }
 
     private void checkIsValidUserSendRequest(String token, Long userId){

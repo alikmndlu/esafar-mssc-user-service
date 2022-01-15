@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkUserExistence(String emailAddress, String password) {
+        password = StaticUtils.md5Encrypt(password);
         return userRepository.existsByEmailAddressAndPassword(emailAddress, password);
     }
 
