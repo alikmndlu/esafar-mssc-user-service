@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 public class UserIdEmailAddressDto {
 
-    private Long id;
+    private String id;
     private String emailAddress;
 }

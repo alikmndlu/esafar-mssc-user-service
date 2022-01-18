@@ -28,76 +28,6 @@ public class UserController {
 
     private final JwtUtil jwtUtil;
 
-    // Get User By Id
-    @GetMapping("/{user-id}")
-    @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public ResponseEntity<User> findUser(
-            @PathVariable("user-id") Long userId,
-            @RequestHeader("Authorization") String token) {
-
-        checkIsValidUserSendRequest(token, userId);
-        System.out.println("");
-
-        Optional<User> user = userService.findUserById(userId);
-
-        log.info("Find User API {requestId: {}, result: {}}", userId, user.isPresent());
-
-        // If Found
-        if (user.isPresent()){
-            return ResponseEntity.ok().body(user.get());
-        }
-
-        // 404 Error, If Not Found
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
-
-    // Update User By Id And Body
-    @PutMapping("/{user-id}")
-    public ResponseEntity<User> updateUser(@PathVariable("user-id") Long userId, @RequestBody Map<String, ?> updates) {
-        return ResponseEntity.accepted().body(userService.updateUser(userId, updates));
-    }
-
-    // Delete User By Id
-    @DeleteMapping("/{user-id}")
-    public ResponseEntity<?> deleteUser(
-            @PathVariable("user-id") Long userId,
-            @RequestHeader("Authorization") String token) {
-
-        checkIsValidUserSendRequest(token, userId);
-        log.info("Delete User API {requestId: {}, result: {}}", userId, true);
-        userService.deleteUser(userId);
-        return ResponseEntity.ok().build();
-    }
-
-    // Get User With Addresses List
-    @GetMapping("/addresses/{user-id}")
-    public ResponseEntity<UserAddressesDto> findUserWithAddresses(
-            @PathVariable("user-id") Long userId,
-            @RequestHeader("Authorization") String token) {
-
-        UserIdEmailAddressDto userInfo = jwtUtil.transferTokenToIdAndEmailAddress(token);
-        log.info("Get User API {requestId: {},jwtId: {}, jwtEmailAddress: {}, result: {}}", userId, userInfo.getId(), userInfo.getEmailAddress(), userInfo.getId().equals(userId));
-        if (!userInfo.getId().equals(userId)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Optional<User> user = userService.findUserById(userId);
-
-        if (user.isPresent()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().body(userService.findUserWithAddresses(user.get()));
-        }
-    }
-
-    // Check User Existence API
-    @PostMapping("/check-existence")
-    public ResponseEntity<Boolean> checkUserExistence(@RequestBody LoginCredentialsDto loginDto) {
-        return ResponseEntity.ok().body(
-                userService.checkUserExistence(loginDto.getEmailAddress(), loginDto.getPassword())
-        );
-    }
-
     // Save New User API
     @PostMapping("/")
     public ResponseEntity<User> saveNewUser(@RequestBody RegisterCredentialsDto registerDto) {
@@ -111,6 +41,30 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
+    // Get User By Id
+    @GetMapping("/{user-id}")
+    public ResponseEntity<User> findUser(@PathVariable("user-id") String userId, @RequestHeader("Authorization") String token) {
+        checkIsValidUserSendRequest(token, userId);
+        Optional<User> user = userService.findUserById(userId);
+        log.info("Get User By API Called {requestId: {}, result: {}}", userId, user.isPresent());
+
+        // If Found
+        if (user.isPresent()){
+            return ResponseEntity.ok().body(user.get());
+        }
+
+        // 404 Error, If Not Found
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    // Check User Existence API
+    @PostMapping("/check-existence")
+    public ResponseEntity<Boolean> checkUserExistence(@RequestBody LoginCredentialsDto loginDto) {
+        return ResponseEntity.ok().body(
+                userService.checkUserExistence(loginDto.getEmailAddress(), loginDto.getPassword())
+        );
+    }
+
     // Find User By Email Address
     @GetMapping("/by-email/{email-address}")
     public ResponseEntity<User> findUserByEmailAddress(@PathVariable("email-address") String emailAddress) {
@@ -118,17 +72,9 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-
-    // Test Endpoint
-    @GetMapping("/test")
-    public ResponseEntity<User> hello() {
-        User user = userService.findUserById(1L).get();
-        return ResponseEntity.ok(user);
-    }
-
-    private void checkIsValidUserSendRequest(String token, Long userId){
-        UserIdEmailAddressDto userInfo = jwtUtil.transferTokenToIdAndEmailAddress(token);
-        if (!userInfo.getId().equals(userId)) {
+    private void checkIsValidUserSendRequest(String token, String userId){
+        UserIdEmailAddressDto userIdEmailAddressDto = jwtUtil.getSubjectOfToken(token);
+        if (!userId.equals(userIdEmailAddressDto.getId())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }

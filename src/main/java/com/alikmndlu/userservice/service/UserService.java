@@ -8,17 +8,21 @@ import java.util.Optional;
 
 public interface UserService {
 
-    Optional<User> findUserById(Long userId);
+    Optional<User> findUserById(String userId);
 
     User createUser(User user);
 
-    void deleteUser(Long userId);
+    void deleteUser(String userId);
 
-    User updateUser(Long userId, Map<String, ?> updates);
+    User updateUser(String userId, Map<String, ?> updates);
 
     UserAddressesDto findUserWithAddresses(User user);
 
     boolean checkUserExistence(String emailAddress, String password);
 
     User findByEmailAddress(String emailAddress);
+
+    void deleteAllUsers();
+
+    String testHelloWorld();
 }

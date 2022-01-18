@@ -9,6 +9,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
@@ -29,7 +30,7 @@ public class BeanFactory {
     @LoadBalanced
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        restTemplate.setRequestFactory(new SimpleClientHttpRequestFactory());
         return restTemplate;
     }
 
@@ -40,7 +41,7 @@ public class BeanFactory {
 
 
     // Data Initializer
-    @Bean
+//    @Bean
     public CommandLineRunner commandLineRunner(
             UserRepository userRepository,
             UserService userService

@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public Optional<User> findUserById(Long userId) {
+    public Optional<User> findUserById(String userId) {
         return userRepository.findById(userId);
     }
 
@@ -29,14 +29,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUser(String userId) {
         boolean isUserExists = userRepository.existsById(userId);
         if (isUserExists)
             userRepository.deleteById(userId);
     }
 
     @Override
-    public User updateUser(Long userId, Map<String, ?> updates) {
+    public User updateUser(String userId, Map<String, ?> updates) {
         //todo update user impl
         return null;
     }
@@ -56,5 +56,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmailAddress(String emailAddress) {
         return userRepository.findByEmailAddress(emailAddress);
+    }
+
+    @Override
+    public void deleteAllUsers() {
+        userRepository.deleteAll();
+    }
+
+    @Override
+    public String testHelloWorld() {
+        return "Hello World!";
     }
 }

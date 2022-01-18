@@ -1,11 +1,10 @@
 package com.alikmndlu.userservice.model;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "users_table")
+@Document(collection = "users")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,16 +13,11 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private String id;
 
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "email_adddress", nullable = false, unique = true)
     private String emailAddress;
 
-    @Column(name = "password", nullable = false)
     private String password;
 }
