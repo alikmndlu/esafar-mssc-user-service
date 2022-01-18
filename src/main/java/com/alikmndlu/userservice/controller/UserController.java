@@ -31,6 +31,8 @@ public class UserController {
     // Save New User API
     @PostMapping("/")
     public ResponseEntity<User> saveNewUser(@RequestBody RegisterCredentialsDto registerDto) {
+        log.info("User Register API Called {Name: {}, EmailAddress: {}, Password: {}}", registerDto.getName(), registerDto.getEmailAddress(), registerDto.getPassword());
+
         User user = userService.createUser(
                 User.builder()
                         .name(registerDto.getName())
@@ -38,6 +40,7 @@ public class UserController {
                         .password(registerDto.getPassword())
                         .build()
         );
+
         return ResponseEntity.ok().body(user);
     }
 
@@ -46,7 +49,7 @@ public class UserController {
     public ResponseEntity<User> findUser(@PathVariable("user-id") String userId, @RequestHeader("Authorization") String token) {
         checkIsValidUserSendRequest(token, userId);
         Optional<User> user = userService.findUserById(userId);
-        log.info("Get User By API Called {requestId: {}, result: {}}", userId, user.isPresent());
+        log.info("Get User By API Called {requestId: {}}", userId);
 
         // If Found
         if (user.isPresent()){
@@ -60,6 +63,7 @@ public class UserController {
     // Check User Existence API
     @PostMapping("/check-existence")
     public ResponseEntity<Boolean> checkUserExistence(@RequestBody LoginCredentialsDto loginDto) {
+        log.info("Check User Existence API Called {EmailAddress: {}, Password:{}}", loginDto.getEmailAddress(), loginDto.getPassword());
         return ResponseEntity.ok().body(
                 userService.checkUserExistence(loginDto.getEmailAddress(), loginDto.getPassword())
         );
@@ -68,6 +72,7 @@ public class UserController {
     // Find User By Email Address
     @GetMapping("/by-email/{email-address}")
     public ResponseEntity<User> findUserByEmailAddress(@PathVariable("email-address") String emailAddress) {
+        log.info("Find User By EmailAddress Called {EmailAddress: {}}", emailAddress);
         User user = userService.findByEmailAddress(emailAddress);
         return ResponseEntity.ok().body(user);
     }
