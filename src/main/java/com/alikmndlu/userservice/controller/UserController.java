@@ -1,6 +1,5 @@
 package com.alikmndlu.userservice.controller;
 
-import com.alikmndlu.userservice.config.UrlConfig;
 import com.alikmndlu.userservice.dto.LoginCredentialsDto;
 import com.alikmndlu.userservice.dto.RegisterCredentialsDto;
 import com.alikmndlu.userservice.dto.UserAddressesDto;
@@ -8,18 +7,14 @@ import com.alikmndlu.userservice.dto.UserIdEmailAddressDto;
 import com.alikmndlu.userservice.model.User;
 import com.alikmndlu.userservice.service.UserService;
 import com.alikmndlu.userservice.util.JwtUtil;
-import exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.HttpResponseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,8 +27,6 @@ public class UserController {
     private final UserService userService;
 
     private final JwtUtil jwtUtil;
-
-    private final BCryptPasswordEncoder passwordEncoder;
 
     // Get User By Id
     @GetMapping("/{user-id}")
@@ -128,8 +121,8 @@ public class UserController {
 
     // Test Endpoint
     @GetMapping("/test")
-    public ResponseEntity<User> hello() throws InterruptedException {
-        User user = userService.findUserById(3L).get();
+    public ResponseEntity<User> hello() {
+        User user = userService.findUserById(1L).get();
         return ResponseEntity.ok(user);
     }
 

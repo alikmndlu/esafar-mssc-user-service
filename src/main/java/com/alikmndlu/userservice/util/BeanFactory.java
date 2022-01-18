@@ -38,6 +38,8 @@ public class BeanFactory {
         return new JwtUtil();
     }
 
+
+    // Data Initializer
     @Bean
     public CommandLineRunner commandLineRunner(
             UserRepository userRepository,
