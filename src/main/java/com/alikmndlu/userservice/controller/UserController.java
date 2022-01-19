@@ -7,6 +7,8 @@ import com.alikmndlu.userservice.dto.UserIdEmailAddressDto;
 import com.alikmndlu.userservice.model.User;
 import com.alikmndlu.userservice.service.UserService;
 import com.alikmndlu.userservice.util.JwtUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,13 +24,17 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Slf4j
+@Api(
+        description = "user controller",
+        tags = "UserController"
+)
 public class UserController {
 
     private final UserService userService;
 
     private final JwtUtil jwtUtil;
 
-    // Save New User API
+    @ApiOperation(value = "Save New User")
     @PostMapping("/")
     public ResponseEntity<User> saveNewUser(@RequestBody RegisterCredentialsDto registerDto) {
         log.info("User Register API Called {Name: {}, EmailAddress: {}, Password: {}}", registerDto.getName(), registerDto.getEmailAddress(), registerDto.getPassword());
@@ -44,7 +50,7 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-    // Get User By Id
+    @ApiOperation(value = "Get User By Id")
     @GetMapping("/{user-id}")
     public ResponseEntity<User> findUser(@PathVariable("user-id") String userId, @RequestHeader("Authorization") String token) {
         checkIsValidUserSendRequest(token, userId);
@@ -61,6 +67,7 @@ public class UserController {
     }
 
     // Check User Existence API
+    @ApiOperation(value = "Check User Existence")
     @PostMapping("/check-existence")
     public ResponseEntity<Boolean> checkUserExistence(@RequestBody LoginCredentialsDto loginDto) {
         log.info("Check User Existence API Called {EmailAddress: {}, Password:{}}", loginDto.getEmailAddress(), loginDto.getPassword());
@@ -70,6 +77,7 @@ public class UserController {
     }
 
     // Find User By Email Address
+    @ApiOperation(value = "Find User By EmailAddress")
     @GetMapping("/by-email/{email-address}")
     public ResponseEntity<User> findUserByEmailAddress(@PathVariable("email-address") String emailAddress) {
         log.info("Find User By EmailAddress Called {EmailAddress: {}}", emailAddress);
